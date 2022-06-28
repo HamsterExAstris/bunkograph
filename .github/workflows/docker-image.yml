@@ -15,4 +15,4 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build ./src/Bunkograph.Web --file Dockerfile --tag my-image-name:$(date +%s)
+      run: docker build . --file src/Bunkograph.Web/Dockerfile --tag my-image-name:$(date +%s)
