@@ -17,10 +17,10 @@ RUN apt-get install -y libpng-dev libjpeg-dev curl libxi6 build-essential libgl1
 RUN curl -sL https://deb.nodesource.com/setup_lts.x | bash -
 RUN apt-get install -y nodejs
 WORKDIR /src
-COPY ["Bunkograph.Web/Bunkograph.Web.csproj", "Bunkograph.Web/"]
-RUN dotnet restore "Bunkograph.Web/Bunkograph.Web.csproj"
+COPY ["src/Bunkograph.Web/Bunkograph.Web.csproj", "src/Bunkograph.Web/"]
+RUN dotnet restore "src/Bunkograph.Web/Bunkograph.Web.csproj"
 COPY . .
-WORKDIR "/src/Bunkograph.Web"
+WORKDIR "/src/src/Bunkograph.Web"
 RUN dotnet build "Bunkograph.Web.csproj" -c Release -o /app/build
 
 FROM build AS publish
