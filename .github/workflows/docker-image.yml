@@ -27,4 +27,4 @@ jobs:
       run: docker build . --file src/Bunkograph.Web/Dockerfile --tag hamsterexastris/bunkographweb:latest --tag hamsterexastris/bunkographweb:$IMAGE_TAG
     
     - name: Upload the Docker image
-      run: docker push --all-tags
+      run: docker push --all-tags hamsterexastris/bunkographweb
