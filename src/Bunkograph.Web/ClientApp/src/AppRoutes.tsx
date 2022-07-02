@@ -14,7 +14,7 @@ const AppRoutes = [
     },
     {
         path: '/graphsample',
-        element: <GraphSample />
+        element: <GraphSample series="The Saga of Tanya the Evil" publisher="Yen Press" />
     },
     {
         path: '/fetch-data',
