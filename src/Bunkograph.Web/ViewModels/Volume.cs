@@ -4,10 +4,7 @@ namespace Bunkograph.Web.ViewModels
 {
     public class Volume
     {
-        /// <summary>
-        /// Release date in Unix timestamp.
-        /// </summary>
-        public long Release { get; set; }
+        public string Release { get; set; }
 
         public decimal? VolumeNumber { get; set; }
 
@@ -21,10 +18,10 @@ namespace Bunkograph.Web.ViewModels
                 throw new ArgumentException("Book is not part of a series.", nameof(bookEdition));
             }
 
-            DateTimeOffset dateTime = new DateTimeOffset(bookEdition.ReleaseDate.ToDateTime(TimeOnly.MinValue));
-            Release = dateTime.ToUnixTimeSeconds();
-
-            VolumeNumber = seriesBook.SortOrder;
+            Release = bookEdition.ReleaseDate.ToString("o");
+            VolumeNumber = (seriesBook.SortOrder == (int)seriesBook.SortOrder)
+                ? Math.Round(seriesBook.SortOrder, 0)
+                : Math.Round(seriesBook.SortOrder, 2);
             Label = seriesBook.DisplayIndex ?? seriesBook.SortOrderString;
         }
     }

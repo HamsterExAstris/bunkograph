@@ -13,7 +13,7 @@ export interface IGraphSampleProps {
 }
 
 interface IVolumeInfo {
-  release: number, // unix time * 1000
+  release: string, // Comes as a string from the API, need to deserialize into a Date ourselves.
   volumeNumber: number,
   label: string
 }
@@ -31,7 +31,7 @@ const populateVolumeData = async (language: string) => {
 
 const mapToPoint = function (v: IVolumeInfo): IPoint {
   return {
-    x: (v.release + 60 * 60 * 12) * 1000,
+    x: dayjs(v.release).unix() * 1000, // Highcharts uses milliseconds since the Unix epoch.
     y: v.volumeNumber,
     z: v.volumeNumber,
     label: v.label
