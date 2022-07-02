@@ -31,7 +31,7 @@ const populateVolumeData = async (language: string) => {
 
 const mapToPoint = function (v: IVolumeInfo): IPoint {
   return {
-    x: v.release + 1000 * 60 * 60 * 12,
+    x: (v.release + 60 * 60 * 12) * 1000,
     y: v.volumeNumber,
     z: v.volumeNumber,
     label: v.label
