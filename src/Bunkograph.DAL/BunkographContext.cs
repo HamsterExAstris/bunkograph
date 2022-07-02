@@ -1,4 +1,5 @@
 ﻿using Bunkograph.Models;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Bunkograph.DAL
@@ -12,6 +13,7 @@ namespace Bunkograph.DAL
 
         public DbSet<Series> Series => Set<Series>();
         public DbSet<Book> Books => Set<Book>();
+        public DbSet<BookEdition> BookEditions => Set<BookEdition>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

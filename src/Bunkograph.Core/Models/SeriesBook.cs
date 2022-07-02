@@ -20,6 +20,9 @@
         }
 
         public decimal SortOrder { get; set; }
+        public string SortOrderString => (SortOrder == (int)SortOrder)
+                    ? SortOrder.ToString("F0")
+                    : SortOrder.ToString("F2");
         public string? DisplayIndex { get; set; }
     }
 }

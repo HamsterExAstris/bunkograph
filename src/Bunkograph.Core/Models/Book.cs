@@ -44,6 +44,7 @@ namespace Bunkograph.Models
             }
         }
 
-        public ICollection<SeriesBook> SeriesBooks { get; set; } = Array.Empty<SeriesBook>();
+        public ICollection<SeriesBook> SeriesBooks { get; set; } = new List<SeriesBook>();
+        public ICollection<BookEdition> Editions { get; set; } = new List<BookEdition>();
     }
 }
