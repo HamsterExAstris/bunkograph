@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import Highcharts from 'highcharts';
+import Highcharts, { PointOptionsObject } from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
 export interface IGraphSampleProps {
@@ -10,6 +10,10 @@ export interface IGraphSampleProps {
 interface IVolumeInfo {
   release: number, // unix time * 1000
   volume: number,
+  label: string
+}
+
+interface IPoint extends PointOptionsObject {
   label: string
 }
 
@@ -177,33 +181,21 @@ const dataABRaw: IVolumeInfo[] = [
   }
 ]
 
-const dataJP = dataJPRaw.map(function (v) {
+const mapToPoint = function (v: IVolumeInfo): IPoint {
   return {
     x: v.release + 1000 * 60 * 60 * 12,
     y: v.volume,
-    z: v.label
+    z: v.volume,
+    label: v.label
   }
-});
-const dataEN = dataENRaw.map(function (v) {
-  return {
-    x: v.release + 1000 * 60 * 60 * 12,
-    y: v.volume,
-    z: v.label
-  }
-});
-const dataENAB = dataABRaw.map(function (v) {
-  return {
-    x: v.release + 1000 * 60 * 60 * 12,
-    y: v.volume,
-    z: v.label
-  }
-});
+}
+
+const dataJP: IPoint[] = dataJPRaw.map(mapToPoint);
+const dataEN: IPoint[] = dataENRaw.map(mapToPoint);
+const dataENAB: IPoint[] = dataABRaw.map(mapToPoint);
 
 const GraphSample: React.FC<IGraphSampleProps> = (props) => {
-  const options = {
-    chart: {
-      type: 'spline'
-    },
+  const options: Highcharts.Options = {
     title: {
       text: '<h3>' + props.series + ' <small class="text-muted">' + props.publisher + '</small></h3>',
       useHTML: true
@@ -241,33 +233,33 @@ const GraphSample: React.FC<IGraphSampleProps> = (props) => {
     },
     series: [
       {
+        type: "spline",
         name: "JP",
         color: "#0d6efd",
         data: dataJP,
         dataLabels: {
           enabled: true,
-          format: "{point.z}",
-          style: { fontSize: "10px", fontWeight: "normal" }
+          format: "{point.label}",
         }
       },
       {
+        type: "spline",
         name: "EN",
         color: "#198754",
         data: dataEN,
         dataLabels: {
           enabled: true,
-          format: "{point.z}",
-          style: { fontSize: "10px", fontWeight: "normal" }
+          format: "{point.label}",
         }
       },
       {
+        type: "spline",
         name: "AB",
         color: "#6f42c1",
         data: dataENAB,
         dataLabels: {
           enabled: true,
-          format: "{point.z}",
-          style: { fontSize: "10px", fontWeight: "normal" }
+          format: "{point.label}",
         }
       }
     ]
