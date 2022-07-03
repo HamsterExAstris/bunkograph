@@ -1,7 +1,7 @@
 import { Counter } from "./components/Counter";
 import { FetchData } from "./components/FetchData";
 import { Home } from "./components/Home";
-import GraphSample from "./components/GraphSample";
+import Series from "./components/Series";
 
 const AppRoutes = [
   {
@@ -13,8 +13,8 @@ const AppRoutes = [
     element: <Counter />
   },
   {
-    path: '/graphsample',
-    element: <GraphSample seriesId={1} series="The Saga of Tanya the Evil" publisher="Yen Press" />
+    path: '/series',
+    element: <Series />
   },
   {
     path: '/fetch-data',
