@@ -41,7 +41,7 @@ jobs:
       
     - name: Run linting
       # ANSI codes for color break the pattern matching. Use the compact format to avoid them.
-      run: npx eslint . --ignore-pattern build\** --format=compact
+      run: npx eslint . --ignore-pattern build\**
       working-directory: src/Bunkograph.Web/ClientApp
         
     - name: Build the Docker image
