@@ -40,7 +40,7 @@ jobs:
       working-directory: src/Bunkograph.Web/ClientApp
       
     - name: Run build for linting
-      run: npm run-scripts build
+      run: npm run-script build
       working-directory: src/Bunkograph.Web/ClientApp
         
     - name: Build the Docker image
