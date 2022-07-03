@@ -39,8 +39,8 @@ jobs:
       run: npm test
       working-directory: src/Bunkograph.Web/ClientApp
       
-    - name: Run build for linting
-      run: npm run-script build
+    - name: Run linting
+      run: npx eslint . --ignore-pattern build\**
       working-directory: src/Bunkograph.Web/ClientApp
         
     - name: Build the Docker image
