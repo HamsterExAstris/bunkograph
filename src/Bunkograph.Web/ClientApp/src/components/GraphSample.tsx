@@ -30,9 +30,10 @@ interface ILocalizationTime {
 }
 
 interface IVolumeInfo {
-  release: string, // Comes as a string from the API, need to deserialize into a Date ourselves.
-  volumeNumber: number,
-  label: string
+  releaseDate: string; // Comes as a string from the API, need to deserialize into a Date ourselves.
+  volumeNumber: number;
+  label: string;
+  language: string;
 }
 
 interface IPoint extends PointOptionsObject {
@@ -40,8 +41,8 @@ interface IPoint extends PointOptionsObject {
   marker?: PointMarkerOptionsObject
 }
 
-const populateVolumeData = async (seriesId: number, language: string) => {
-  const response = await fetch('volumes/' + seriesId + '/' + language);
+const populateVolumeData = async (seriesId: number) => {
+  const response = await fetch('volumes/series/' + seriesId);
   const data = await response.json();
 
   return data as IVolumeInfo[];
@@ -49,7 +50,7 @@ const populateVolumeData = async (seriesId: number, language: string) => {
 
 const mapToPoint = function (v: IVolumeInfo): IPoint {
   var result: IPoint = {
-    x: dayjs(v.release).unix() * 1000, // Highcharts uses milliseconds since the Unix epoch.
+    x: dayjs(v.releaseDate).unix() * 1000, // Highcharts uses milliseconds since the Unix epoch.
     y: v.volumeNumber,
     z: v.volumeNumber,
     label: v.label
@@ -176,25 +177,30 @@ const GraphSample: React.FC<IGraphSampleProps> = (props) => {
 
   useEffect(() => {
     const getAnswer = async () => {
-      const jp = await populateVolumeData(props.seriesId, "jp");
-      const en = await populateVolumeData(props.seriesId, "en");
-      const ab = await populateVolumeData(props.seriesId, "ab");
+      const volumes = await populateVolumeData(props.seriesId);
+      const jp: IVolumeInfo[] = [], en: IVolumeInfo[] = [], ab: IVolumeInfo[] = [];
 
-      var leadtimes : number[] = [];
+      var leadtimes: number[] = [];
       const jpdate: dayjs.Dayjs[] = [], endate: dayjs.Dayjs[] = [], abdate: dayjs.Dayjs[] = [];
-      for (const volume of jp)
-      {
-        jpdate.push(dayjs(volume.release));
+
+      for (const volume of volumes) {
+        if (volume.language === "jp") {
+          jp.push(volume);
+          jpdate.push(dayjs(volume.releaseDate));
+        }
+        else if (volume.language === "en") {
+          en.push(volume);
+          endate.push(dayjs(volume.releaseDate));
+        }
+        else if (volume.language === "ab") {
+          ab.push(volume);
+          abdate.push(dayjs(volume.releaseDate));
+        }
       }
-      for (const volume of en) {
-        endate.push(dayjs(volume.release));
-      }
-      for (const volume of ab) {
-        abdate.push(dayjs(volume.release));
-      }
+
       for (let i = 0; i < en.length; i++) {
-        const releasejp = dayjs(jp[i].release);
-        const releaseen = dayjs(en[i].release);
+        const releasejp = dayjs(jp[i].releaseDate);
+        const releaseen = dayjs(en[i].releaseDate);
         if (releaseen && releasejp) {
           leadtimes.push(releaseen.diff(releasejp, 'seconds'));
         }
@@ -253,7 +259,7 @@ const GraphSample: React.FC<IGraphSampleProps> = (props) => {
         } else {
           const item = jp.filter(x => x.volumeNumber === targetjp)[0];
           if (item) {
-            _item = dayjs(item.release);
+            _item = dayjs(item.releaseDate);
           }
         }
         if (_item) {
@@ -285,7 +291,7 @@ const GraphSample: React.FC<IGraphSampleProps> = (props) => {
         } else {
           const item = jp.filter(x => x.volumeNumber === targetjp)[0];
           if (item) {
-            _item = dayjs(item.release);
+            _item = dayjs(item.releaseDate);
           }
         }
         if (_item) {
@@ -312,9 +318,10 @@ const GraphSample: React.FC<IGraphSampleProps> = (props) => {
       if (nextjp) {
         jp.push(
           {
-            release: nextjp.format("YYYY-MM-DD"),
+            releaseDate: nextjp.format("YYYY-MM-DD"),
             volumeNumber: maxjp + 1,
-            label: "Next?"
+            label: "Next?",
+            language: "jp"
           }
         );
       }
@@ -322,9 +329,10 @@ const GraphSample: React.FC<IGraphSampleProps> = (props) => {
       if (nexten) {
         en.push(
           {
-            release: nexten.format("YYYY-MM-DD"),
+            releaseDate: nexten.format("YYYY-MM-DD"),
             volumeNumber: maxen + 1,
-            label: "Next?"
+            label: "Next?",
+            language: "en"
           }
         );
       }
@@ -332,9 +340,10 @@ const GraphSample: React.FC<IGraphSampleProps> = (props) => {
       if (nextab) {
         ab.push(
           {
-            release: nextab.format("YYYY-MM-DD"),
+            releaseDate: nextab.format("YYYY-MM-DD"),
             volumeNumber: maxab + 1,
-            label: "Next?"
+            label: "Next?",
+            language: "ab"
           }
         );
       }
@@ -350,7 +359,7 @@ const GraphSample: React.FC<IGraphSampleProps> = (props) => {
         }
 
         if (en.length > 1) {
-          let items = en.map(function (x) { return dayjs(x.release).unix() as number; }),
+          let items = en.map(function (x) { return dayjs(x.releaseDate).unix() as number; }),
             dists = items.slice(1).map((v, i) => v - items[i]),
             sum = dists.reduce(function (a, b) { return a + b; })
           let avg = (sum / dists.length) / (30 * 24 * 60 * 60);
@@ -365,7 +374,7 @@ const GraphSample: React.FC<IGraphSampleProps> = (props) => {
         }
 
         if (ab.length > 1) {
-          let items = ab.map(function (x) { return dayjs(x.release).unix() as number; }),
+          let items = ab.map(function (x) { return dayjs(x.releaseDate).unix() as number; }),
             dists = items.slice(1).map((v, i) => v - items[i]),
             sum = dists.reduce(function (a, b) { return a + b; })
           let avg = (sum / dists.length) / (30 * 24 * 60 * 60);
@@ -380,7 +389,7 @@ const GraphSample: React.FC<IGraphSampleProps> = (props) => {
         }
 
         if (jp.length > 1) {
-          let items = jp.map(function (x) { return dayjs(x.release).unix() as number; }),
+          let items = jp.map(function (x) { return dayjs(x.releaseDate).unix() as number; }),
             dists = items.slice(1).map((v, i) => v - items[i]),
             sum = dists.reduce(function (a, b) { return a + b; })
           let avg = sum / dists.length / (30 * 24 * 60 * 60)
@@ -396,7 +405,7 @@ const GraphSample: React.FC<IGraphSampleProps> = (props) => {
         }
 
         if (en.length > 1) {
-          let items = en.map(function (x) { return dayjs(x.release).unix() as number; }),
+          let items = en.map(function (x) { return dayjs(x.releaseDate).unix() as number; }),
             dists = items.slice(1).map((v, i) => v - items[i]),
             avg = indexWeightedMean(dists) / (30 * 24 * 60 * 60)
             ;
@@ -411,7 +420,7 @@ const GraphSample: React.FC<IGraphSampleProps> = (props) => {
         }
 
         if (ab.length > 1) {
-          let items = ab.map(function (x) { return dayjs(x.release).unix() as number; }),
+          let items = ab.map(function (x) { return dayjs(x.releaseDate).unix() as number; }),
             dists = items.slice(1).map((v, i) => v - items[i]),
             avg = indexWeightedMean(dists) / (30 * 24 * 60 * 60)
             ;
@@ -426,7 +435,7 @@ const GraphSample: React.FC<IGraphSampleProps> = (props) => {
         }
 
         if (jp.length > 1) {
-          let items = jp.map(function (x) { return dayjs(x.release).unix() as number; }),
+          let items = jp.map(function (x) { return dayjs(x.releaseDate).unix() as number; }),
             dists = items.slice(1).map((v, i) => v - items[i]),
             avg = indexWeightedMean(dists) / (30 * 24 * 60 * 60)
             ;

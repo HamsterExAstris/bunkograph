@@ -19,19 +19,17 @@ namespace Bunkograph.Web.Controllers
             _context = context;
         }
 
-        // GET: api/<VolumesController>
-        [HttpGet("{seriesId}/{language}")]
-        public async IAsyncEnumerable<Volume> Get(int seriesId, string language)
+        // GET: api/<VolumesController>/series/5
+        [HttpGet("series/{seriesId}")]
+        public async IAsyncEnumerable<Volume> GetBySeries(int seriesId)
         {
-            // TODO: Language query can't be run on the SQL server when doing it like this. We probably just want to return them all
-            // regardless of language.
             await foreach (Models.SeriesBook? seriesBook in _context.SeriesBooks
                 .Where(sb => sb.Series.SeriesId == seriesId)
                 .Include(sb => sb.Book)
                 .ThenInclude(b => b.Editions)
                 .AsAsyncEnumerable())
             {
-                foreach (Models.BookEdition? bookEdition in seriesBook.Book.Editions.Where(e => e.Language == language))
+                foreach (Models.BookEdition? bookEdition in seriesBook.Book.Editions)
                 {
                     yield return new Volume(seriesBook, bookEdition);
                 }
@@ -39,7 +37,6 @@ namespace Bunkograph.Web.Controllers
         }
 
         // GET api/<VolumesController>/5
-        //[HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             Models.BookEdition? bookEdition = await _context.BookEditions.FindAsync(id);
