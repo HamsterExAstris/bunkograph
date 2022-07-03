@@ -206,7 +206,6 @@ const GraphSample: React.FC<IGraphSampleProps> = (props) => {
       let nextjp: dayjs.Dayjs | undefined;
       let nexten: dayjs.Dayjs | undefined;
       let nextab: dayjs.Dayjs | undefined;
-      let nextjp_uncorrected: dayjs.Dayjs | undefined;
       let nexten_uncorrected: dayjs.Dayjs | undefined;
       let nextab_uncorrected: dayjs.Dayjs | undefined;
       let maxjp: number;
@@ -238,7 +237,6 @@ const GraphSample: React.FC<IGraphSampleProps> = (props) => {
         nextab = nextOcurrenceInListWeighted(abdate);
       }
 
-      nextjp_uncorrected = nextjp ? dayjs(nextjp) : undefined;
       nexten_uncorrected = nexten ? dayjs(nexten) : undefined;
       nextab_uncorrected = nextab ? dayjs(nextab) : undefined;
 
