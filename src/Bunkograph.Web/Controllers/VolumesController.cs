@@ -20,27 +20,32 @@ namespace Bunkograph.Web.Controllers
         }
 
         // GET: api/<VolumesController>
-        [HttpGet("{language}")]
-        public async IAsyncEnumerable<Volume> Get(string language)
+        [HttpGet("{seriesId}/{language}")]
+        public async IAsyncEnumerable<Volume> Get(int seriesId, string language)
         {
-            await foreach (Models.BookEdition? volume in _context.BookEditions
-                .Where(be => be.Language == language)
-                .Include(be => be.Book)
-                .ThenInclude(b => b.SeriesBooks)
+            // TODO: Language query can't be run on the SQL server when doing it like this. We probably just want to return them all
+            // regardless of language.
+            await foreach (Models.SeriesBook? seriesBook in _context.SeriesBooks
+                .Where(sb => sb.Series.SeriesId == seriesId)
+                .Include(sb => sb.Book)
+                .ThenInclude(b => b.Editions)
                 .AsAsyncEnumerable())
             {
-                yield return new Volume(volume);
+                foreach (Models.BookEdition? bookEdition in seriesBook.Book.Editions.Where(e => e.Language == language))
+                {
+                    yield return new Volume(seriesBook, bookEdition);
+                }
             }
         }
 
         // GET api/<VolumesController>/5
-        // [HttpGet("{id}")]
+        //[HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             Models.BookEdition? bookEdition = await _context.BookEditions.FindAsync(id);
             return bookEdition is null
                 ? NotFound()
-                : Ok(new Volume(bookEdition));
+                : throw new NotImplementedException(); // Ok(new Volume(bookEdition));
         }
 
         // POST api/<VolumesController>

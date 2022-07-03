@@ -10,14 +10,8 @@ namespace Bunkograph.Web.ViewModels
 
         public string Label { get; set; }
 
-        public Volume(BookEdition bookEdition)
+        public Volume(SeriesBook seriesBook, BookEdition bookEdition)
         {
-            SeriesBook? seriesBook = bookEdition.Book.SeriesBooks.FirstOrDefault();
-            if (seriesBook is null)
-            {
-                throw new ArgumentException("Book is not part of a series.", nameof(bookEdition));
-            }
-
             Release = bookEdition.ReleaseDate.ToString("o");
             VolumeNumber = (seriesBook.SortOrder == (int)seriesBook.SortOrder)
                 ? Math.Round(seriesBook.SortOrder, 0)

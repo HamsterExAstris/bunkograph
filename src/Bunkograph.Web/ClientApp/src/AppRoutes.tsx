@@ -4,22 +4,22 @@ import { Home } from "./components/Home";
 import GraphSample from "./components/GraphSample";
 
 const AppRoutes = [
-    {
-        index: true,
-        element: <Home />
-    },
-    {
-        path: '/counter',
-        element: <Counter />
-    },
-    {
-        path: '/graphsample',
-        element: <GraphSample series="The Saga of Tanya the Evil" publisher="Yen Press" />
-    },
-    {
-        path: '/fetch-data',
-        element: <FetchData />
-    }
+  {
+    index: true,
+    element: <Home />
+  },
+  {
+    path: '/counter',
+    element: <Counter />
+  },
+  {
+    path: '/graphsample',
+    element: <GraphSample seriesId={1} series="The Saga of Tanya the Evil" publisher="Yen Press" />
+  },
+  {
+    path: '/fetch-data',
+    element: <FetchData />
+  }
 ];
 
 export default AppRoutes;

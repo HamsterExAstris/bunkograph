@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 highchartsAccessibility(Highcharts);
 
 export interface IGraphSampleProps {
+  seriesId: number,
   series: string,
   publisher: string
 }
@@ -39,8 +40,8 @@ interface IPoint extends PointOptionsObject {
   marker?: PointMarkerOptionsObject
 }
 
-const populateVolumeData = async (language: string) => {
-  const response = await fetch('volumes/' + language);
+const populateVolumeData = async (seriesId: number, language: string) => {
+  const response = await fetch('volumes/' + seriesId + '/' + language);
   const data = await response.json();
 
   return data as IVolumeInfo[];
@@ -175,9 +176,9 @@ const GraphSample: React.FC<IGraphSampleProps> = (props) => {
 
   useEffect(() => {
     const getAnswer = async () => {
-      const jp = await populateVolumeData("jp");
-      const en = await populateVolumeData("en");
-      const ab = await populateVolumeData("ab");
+      const jp = await populateVolumeData(props.seriesId, "jp");
+      const en = await populateVolumeData(props.seriesId, "en");
+      const ab = await populateVolumeData(props.seriesId, "ab");
 
       var leadtimes : number[] = [];
       const jpdate: dayjs.Dayjs[] = [], endate: dayjs.Dayjs[] = [], abdate: dayjs.Dayjs[] = [];
@@ -484,7 +485,7 @@ const GraphSample: React.FC<IGraphSampleProps> = (props) => {
       }
     }
     getAnswer();
-  }, [props.series, props.publisher]);
+  }, [props.seriesId, props.series, props.publisher]);
 
   return (
     <>
