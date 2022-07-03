@@ -170,7 +170,7 @@ function nextOcurrenceInListWeighted(momentArray: dayjs.Dayjs[]): dayjs.Dayjs | 
 }
 
 const GraphSample: React.FC<IGraphSampleProps> = (props) => {
-  const [options, setOptions] = useState<Highcharts.Options>(buildOptions(props.seriesInfo.series, props.seriesInfo.publisher));
+  const [options, setOptions] = useState<Highcharts.Options>(buildOptions(props.seriesInfo.englishName, props.seriesInfo.publisher));
   const [publishRate, setPublishRate] = useState<IPublishRate>();
   const [localizationTime, setLocalizationTime] = useState<ILocalizationTime>();
 
@@ -351,7 +351,7 @@ const GraphSample: React.FC<IGraphSampleProps> = (props) => {
       const dataEN: IPoint[] = en.map(mapToPoint);
       const dataAB: IPoint[] = ab.map(mapToPoint);
 
-      setOptions(buildOptions(props.seriesInfo.series, props.seriesInfo.publisher, dataJP, dataEN, dataAB));
+      setOptions(buildOptions(props.seriesInfo.englishName, props.seriesInfo.publisher, dataJP, dataEN, dataAB));
 
       if (en.length > 1 || jp.length > 1) {
         const pubData: IPublishRate = {
@@ -491,7 +491,7 @@ const GraphSample: React.FC<IGraphSampleProps> = (props) => {
       }
     }
     getAnswer();
-  }, [props.seriesInfo.seriesId, props.seriesInfo.series, props.seriesInfo.publisher]);
+  }, [props.seriesInfo.seriesId, props.seriesInfo.englishName, props.seriesInfo.publisher]);
 
   return (
     <>
