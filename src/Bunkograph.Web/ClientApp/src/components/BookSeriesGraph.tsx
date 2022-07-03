@@ -3,14 +3,13 @@ import Highcharts, { PointMarkerOptionsObject, PointOptionsObject } from 'highch
 import highchartsAccessibility from "highcharts/modules/accessibility";
 import HighchartsReact from 'highcharts-react-official';
 import { useEffect, useState } from 'react';
+import { ISeriesInfo } from './Series';
 
 // Initialize Highcharts for accessibility.
 highchartsAccessibility(Highcharts);
 
 export interface IGraphSampleProps {
-  seriesId: number,
-  series: string,
-  publisher: string
+  seriesInfo: ISeriesInfo
 }
 
 interface IPublishRate {
@@ -65,10 +64,10 @@ const mapToPoint = function (v: IVolumeInfo): IPoint {
   return result;
 }
 
-const buildOptions = function (series: string, publisher: string, dataJP?: IPoint[], dataEN?: IPoint[], dataAB?: IPoint[]): Highcharts.Options {
+const buildOptions = function (series: string, publisher?: string, dataJP?: IPoint[], dataEN?: IPoint[], dataAB?: IPoint[]): Highcharts.Options {
   return {
     title: {
-      text: '<h3>' + series + ' <small class="text-muted">' + publisher + '</small></h3>',
+      text: '<h3>' + series + (publisher ? (' <small class="text-muted">' + publisher + '</small>') : "") + '</h3>',
       useHTML: true
     },
     xAxis: {
@@ -171,13 +170,13 @@ function nextOcurrenceInListWeighted(momentArray: dayjs.Dayjs[]): dayjs.Dayjs | 
 }
 
 const GraphSample: React.FC<IGraphSampleProps> = (props) => {
-  const [options, setOptions] = useState<Highcharts.Options>(buildOptions(props.series, props.publisher));
+  const [options, setOptions] = useState<Highcharts.Options>(buildOptions(props.seriesInfo.series, props.seriesInfo.publisher));
   const [publishRate, setPublishRate] = useState<IPublishRate>();
   const [localizationTime, setLocalizationTime] = useState<ILocalizationTime>();
 
   useEffect(() => {
     const getAnswer = async () => {
-      const volumes = await populateVolumeData(props.seriesId);
+      const volumes = await populateVolumeData(props.seriesInfo.seriesId);
       const jp: IVolumeInfo[] = [], en: IVolumeInfo[] = [], ab: IVolumeInfo[] = [];
 
       var leadtimes: number[] = [];
@@ -352,7 +351,7 @@ const GraphSample: React.FC<IGraphSampleProps> = (props) => {
       const dataEN: IPoint[] = en.map(mapToPoint);
       const dataAB: IPoint[] = ab.map(mapToPoint);
 
-      setOptions(buildOptions(props.series, props.publisher, dataJP, dataEN, dataAB));
+      setOptions(buildOptions(props.seriesInfo.series, props.seriesInfo.publisher, dataJP, dataEN, dataAB));
 
       if (en.length > 1 || jp.length > 1) {
         const pubData: IPublishRate = {
@@ -492,7 +491,7 @@ const GraphSample: React.FC<IGraphSampleProps> = (props) => {
       }
     }
     getAnswer();
-  }, [props.seriesId, props.series, props.publisher]);
+  }, [props.seriesInfo.seriesId, props.seriesInfo.series, props.seriesInfo.publisher]);
 
   return (
     <>
