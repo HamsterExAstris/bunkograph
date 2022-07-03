@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Bunkograph.Web.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class VolumesController : ControllerBase
     {

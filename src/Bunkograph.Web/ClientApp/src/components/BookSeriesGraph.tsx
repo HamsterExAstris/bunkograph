@@ -42,7 +42,7 @@ interface IPoint extends PointOptionsObject {
 }
 
 const populateVolumeData = async (seriesId: number) => {
-  const response = await fetch('volumes/series/' + seriesId);
+  const response = await fetch('api/volumes/series/' + seriesId);
   const data = await response.json();
 
   return data as IVolumeInfo[];

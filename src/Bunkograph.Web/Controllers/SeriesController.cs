@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Bunkograph.Web.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class SeriesController : ControllerBase
     {
