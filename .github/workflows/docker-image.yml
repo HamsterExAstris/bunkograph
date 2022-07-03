@@ -29,15 +29,15 @@ jobs:
       
     - name: Restore packages
       run: npm ci --no-audit
-      working-directory: src/Bunkograph.Web/ClientApps
+      working-directory: src/Bunkograph.Web/ClientApp
       
     - name: Audit packages
       run: npm audit --omit=dev
-      working-directory: src/Bunkograph.Web/ClientApps
+      working-directory: src/Bunkograph.Web/ClientApp
       
     - name: Run tests
       run: npm test
-      working-directory: src/Bunkograph.Web/ClientApps
+      working-directory: src/Bunkograph.Web/ClientApp
         
     - name: Build the Docker image
       run: docker build . --file src/Bunkograph.Web/Dockerfile --tag hamsterexastris/bunkographweb:latest --tag hamsterexastris/bunkographweb:$IMAGE_TAG
