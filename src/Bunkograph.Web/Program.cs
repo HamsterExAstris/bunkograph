@@ -1,6 +1,9 @@
 
 using Bunkograph.DAL;
+
 using Microsoft.EntityFrameworkCore;
+
+using MySqlConnector;
 
 namespace Bunkograph.Web
 {
@@ -14,7 +17,17 @@ namespace Bunkograph.Web
 
             builder.Services.AddControllersWithViews();
 
-            string? connectionString = "server=hamsterexastris.synology.me;port=3307;user=BunkographWeb;password=&34f!E3E*6uiMF#u;database=bunkograph";
+            string? connectionString = Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb");
+            if (connectionString is null)
+            {
+                connectionString = "server=hamsterexastris.synology.me;port=3307;user=BunkographWeb;password=&34f!E3E*6uiMF#u";
+            }
+            MySqlConnectionStringBuilder? connectionStringBuilder = new MySqlConnectionStringBuilder(connectionString)
+            {
+                Database = "bunkograph"
+            };
+            connectionString = connectionStringBuilder.ToString();
+
             ServerVersion? serverVersion = ServerVersion.AutoDetect(connectionString);
             builder.Services.AddDbContext<BunkographContext>(dbContextOptions =>
             {
