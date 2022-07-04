@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { Input } from "reactstrap";
 import GraphSample from "./BookSeriesGraph";
 
@@ -19,28 +20,40 @@ const Series: React.FC = () => {
   const [seriesInfos, setSeriesInfos] = useState<ISeriesInfo[]>();
   const [seriesInfo, setSeriesInfo] = useState<ISeriesInfo | undefined>();
 
+  const navigate = useNavigate();
+  const params = useParams();
+
   const setSeries = (e: React.ChangeEvent<HTMLInputElement>) => {
     const seriesId = parseInt(e.target.value);
-    if (seriesId && seriesInfos) {
-      for (const seriesInfo of seriesInfos)
-      {
-        if (seriesInfo.seriesId === seriesId) {
-          setSeriesInfo(seriesInfo);
-        }
-      }
+    if (seriesId) {
+      navigate('/series/' + seriesId);
     }
     else {
-      setSeriesInfo(undefined);
+      navigate('/series');
     }
   }
 
   useEffect(() => {
     const getAnswer = async () => {
+      // Get the data for all series from the API.
       const series = await populateSeriesData();
       setSeriesInfos(series);
+
+      // If the URL specifies a specific series, load the data into state for rendering.
+      const seriesId = params.seriesId ? parseInt(params.seriesId) : undefined;
+      if (seriesId) {
+        for (const seriesInfo of series) {
+          if (seriesInfo.seriesId === seriesId) {
+            setSeriesInfo(seriesInfo);
+          }
+        }
+      }
+      else {
+        setSeriesInfo(undefined);
+      }
     }
     getAnswer();
-  }, []);
+  }, [params.seriesId]);
 
   return (
     <>
