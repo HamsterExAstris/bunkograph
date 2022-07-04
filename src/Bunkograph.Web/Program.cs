@@ -3,8 +3,6 @@ using Bunkograph.DAL;
 
 using Microsoft.EntityFrameworkCore;
 
-using MySqlConnector;
-
 namespace Bunkograph.Web
 {
     public class Program
@@ -17,16 +15,21 @@ namespace Bunkograph.Web
 
             builder.Services.AddControllersWithViews();
 
-            string? connectionString = Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb");
+            string? connectionString = builder.Configuration.GetConnectionString("localdb");
             if (connectionString is null)
             {
-                connectionString = "server=hamsterexastris.synology.me;port=3307;user=BunkographWeb;password=&34f!E3E*6uiMF#u";
+                connectionString = "server=hamsterexastris.synology.me;port=3307;user=BunkographWeb;password=&34f!E3E*6uiMF#u;database=bunkograph";
             }
-            MySqlConnectionStringBuilder? connectionStringBuilder = new MySqlConnectionStringBuilder(connectionString)
+            else
             {
-                Database = "bunkograph"
-            };
-            connectionString = connectionStringBuilder.ToString();
+                string? port = builder.Configuration.GetValue<string>("WEBSITE_MYSQL_PORT");
+                if (port != null)
+                {
+                    // Azure App Services do not create a valid connection string. We need to tweak it
+                    // and move the port # into a separate key-value pair.
+                    connectionString = connectionString.Replace(":" + port, string.Empty) + ";Port=" + port;
+                }
+            }
 
             ServerVersion? serverVersion = ServerVersion.AutoDetect(connectionString);
             builder.Services.AddDbContext<BunkographContext>(dbContextOptions =>
