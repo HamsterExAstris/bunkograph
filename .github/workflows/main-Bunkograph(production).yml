@@ -52,5 +52,5 @@ jobs:
         with:
           app-name: 'Bunkograph'
           slot-name: 'production'
-          publish-profile: ${{ secrets.AzureAppService_PublishProfile_1234 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_2289576DA6334112B25D00BB999FAD5A }}
           package: .
