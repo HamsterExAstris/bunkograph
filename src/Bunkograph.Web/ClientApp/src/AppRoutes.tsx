@@ -17,6 +17,10 @@ const AppRoutes = [
     element: <Series />
   },
   {
+    path: '/series/:seriesId',
+    element: <Series />
+  },
+  {
     path: '/fetch-data',
     element: <FetchData />
   }
