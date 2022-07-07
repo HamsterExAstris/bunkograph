@@ -1,14 +1,51 @@
-import { AuthenticatedTemplate, UnauthenticatedTemplate } from "@azure/msal-react";
+import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal } from "@azure/msal-react";
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Collapse, Navbar, NavbarBrand, NavItem, NavLink } from 'reactstrap';
+import { Button, Collapse, Navbar, NavbarBrand, NavItem, NavLink } from 'reactstrap';
+import { loginRequest } from "../authConfig";
 import './NavMenu.css';
 import { SignInButton } from "./SignInButton";
-import { SignOutButton } from './SignOutButton';
 
 export interface INavMenuState {
   collapsed: boolean
 }
+
+function ProfileContent() {
+  const { instance, accounts, inProgress } = useMsal();
+  const [accessToken, setAccessToken] = useState<string | undefined>();
+  const [idToken, setIdToken] = useState<string | undefined>();
+ 
+  const name = accounts[0] && accounts[0].name;
+
+  function RequestAccessToken() {
+    const request = {
+      ...loginRequest,
+      account: accounts[0]
+    };
+
+    // Silently acquires an access token which is then attached to a request for Microsoft Graph data
+    instance.acquireTokenSilent(request).then((response) => {
+      setAccessToken(response.accessToken);
+      setIdToken(response.idToken);
+    }).catch((e) => {
+      instance.acquireTokenPopup(request).then((response) => {
+        setAccessToken(response.accessToken);
+        setIdToken(response.idToken);
+      });
+    });
+  }
+
+  return (
+    <>
+      <h5 className="card-title">Welcome {name}</h5>
+      {accessToken ?
+        <p>Access Token Acquired!</p>
+        :
+        <Button variant="secondary" onClick={RequestAccessToken}>Request Access Token</Button>
+      }
+    </>
+  );
+};
 
 export const NavMenu: React.FC = () => {
   const [collapsed, setCollapsed] = useState<boolean>(true);
@@ -49,10 +86,10 @@ export const NavMenu: React.FC = () => {
               <NavLink tag={Link} className="text-dark" to="/series">Series</NavLink>
             </NavItem>
             <AuthenticatedTemplate>
-              <p>You are signed in!</p> <SignOutButton />
+              <ProfileContent />
             </AuthenticatedTemplate>
             <UnauthenticatedTemplate>
-              <p>You are not signed in! Please sign in.</p> <SignInButton />
+              <SignInButton />
             </UnauthenticatedTemplate>
           </ul>
         </Collapse>

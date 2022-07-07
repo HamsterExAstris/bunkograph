@@ -1,6 +1,7 @@
 
 using Bunkograph.DAL;
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bunkograph.Web
@@ -41,6 +42,18 @@ namespace Bunkograph.Web
                 }
             });
 
+            builder.Services.AddAuthentication(options => options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(jwtOptions =>
+                {
+                    string? instance = builder.Configuration["AzureAd:Instance"];
+                    string? domain = builder.Configuration["AzureAd:Domain"];
+
+                    jwtOptions.Authority = $"{instance}/{domain}/v2.0/";
+                    jwtOptions.Audience = builder.Configuration["AzureAd:ClientId"];
+
+                    jwtOptions.RequireHttpsMetadata = !builder.Environment.IsDevelopment();
+                });
+
             WebApplication? app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -54,6 +67,8 @@ namespace Bunkograph.Web
             app.UseStaticFiles();
             app.UseRouting();
 
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",
