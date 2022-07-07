@@ -30,7 +30,7 @@ async function populateSeriesData(instance: IPublicClientApplication, accounts: 
 
   const response = await fetch('api/series', {
     headers: {
-      'Authorization': idToken ?? ""
+      'Authorization': "Bearer " + idToken ?? ""
     }
   });
   const data = await response.json();
