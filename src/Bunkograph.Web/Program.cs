@@ -1,8 +1,9 @@
 
 using Bunkograph.DAL;
 
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Web;
+using Microsoft.IdentityModel.Logging;
 
 namespace Bunkograph.Web
 {
@@ -42,17 +43,7 @@ namespace Bunkograph.Web
                 }
             });
 
-            builder.Services.AddAuthentication(options => options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(jwtOptions =>
-                {
-                    string? instance = builder.Configuration["AzureAd:Instance"];
-                    string? domain = builder.Configuration["AzureAd:Domain"];
-
-                    jwtOptions.Authority = $"{instance}/{domain}/v2.0/";
-                    jwtOptions.Audience = builder.Configuration["AzureAd:ClientId"];
-
-                    jwtOptions.RequireHttpsMetadata = !builder.Environment.IsDevelopment();
-                });
+            builder.Services.AddMicrosoftIdentityWebApiAuthentication(builder.Configuration);
 
             WebApplication? app = builder.Build();
 
@@ -61,6 +52,10 @@ namespace Bunkograph.Web
             {
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
+            }
+            else
+            {
+                IdentityModelEventSource.ShowPII = true;
             }
 
             app.UseHttpsRedirection();
