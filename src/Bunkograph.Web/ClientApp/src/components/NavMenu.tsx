@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
-import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
 import './NavMenu.css';
 
-export class NavMenu extends Component {
+export interface INavMenuState {
+  collapsed: boolean
+}
+
+export class NavMenu extends Component<undefined, INavMenuState> {
   static displayName = NavMenu.name;
 
-  constructor (props) {
+  constructor(props: undefined) {
     super(props);
 
     this.toggleNavbar = this.toggleNavbar.bind(this);
