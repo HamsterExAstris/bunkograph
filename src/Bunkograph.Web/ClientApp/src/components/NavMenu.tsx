@@ -1,19 +1,16 @@
-import { useIsAuthenticated } from '@azure/msal-react';
+import { AuthenticatedTemplate, UnauthenticatedTemplate } from "@azure/msal-react";
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Collapse, Navbar, NavbarBrand, NavItem, NavLink } from 'reactstrap';
 import './NavMenu.css';
 import { SignInButton } from "./SignInButton";
+import { SignOutButton } from './SignOutButton';
 
 export interface INavMenuState {
   collapsed: boolean
 }
 
 export const NavMenu: React.FC = () => {
-//export class NavMenu extends Component<undefined, INavMenuState> {
-  // static displayName = NavMenu.name;
-  const isAuthenticated = useIsAuthenticated();
-
   const [collapsed, setCollapsed] = useState<boolean>(true);
 
   const toggleNavbar = () => {
@@ -51,7 +48,12 @@ export const NavMenu: React.FC = () => {
             <NavItem>
               <NavLink tag={Link} className="text-dark" to="/series">Series</NavLink>
             </NavItem>
-            {isAuthenticated ? <span>Signed In</span> : <SignInButton />}
+            <AuthenticatedTemplate>
+              <p>You are signed in!</p> <SignOutButton />
+            </AuthenticatedTemplate>
+            <UnauthenticatedTemplate>
+              <p>You are not signed in! Please sign in.</p> <SignInButton />
+            </UnauthenticatedTemplate>
           </ul>
         </Collapse>
       </Navbar>
