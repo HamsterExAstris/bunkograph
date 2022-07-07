@@ -1,15 +1,26 @@
-import React, { Component } from 'react';
+import { useIsAuthenticated } from '@azure/msal-react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
+import { Collapse, Navbar, NavbarBrand, NavItem, NavLink } from 'reactstrap';
 import './NavMenu.css';
+import { SignInButton } from "./SignInButton";
 
 export interface INavMenuState {
   collapsed: boolean
 }
 
-export class NavMenu extends Component<undefined, INavMenuState> {
-  static displayName = NavMenu.name;
+export const NavMenu: React.FC = () => {
+//export class NavMenu extends Component<undefined, INavMenuState> {
+  // static displayName = NavMenu.name;
+  const isAuthenticated = useIsAuthenticated();
 
+  const [collapsed, setCollapsed] = useState<boolean>(true);
+
+  const toggleNavbar = () => {
+    setCollapsed(!collapsed);
+  }
+
+  /*
   constructor(props: undefined) {
     super(props);
 
@@ -24,25 +35,26 @@ export class NavMenu extends Component<undefined, INavMenuState> {
       collapsed: !this.state.collapsed
     });
   }
+  */
 
-  render() {
-    return (
-      <header>
-        <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" container light>
-          <NavbarBrand tag={Link} to="/">Bunkograph.Web</NavbarBrand>
-          <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
-          <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!this.state.collapsed} navbar>
-            <ul className="navbar-nav flex-grow">
-              <NavItem>
-                <NavLink tag={Link} className="text-dark" to="/">Home</NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink tag={Link} className="text-dark" to="/series">Series</NavLink>
-              </NavItem>
-            </ul>
-          </Collapse>
-        </Navbar>
-      </header>
-    );
-  }
+  return (
+    <header>
+      <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" container light>
+        <NavbarBrand tag={Link} to="/">Bunkograph.Web</NavbarBrand>
+        { // <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
+        }
+        <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!collapsed} navbar>
+          <ul className="navbar-nav flex-grow">
+            <NavItem>
+              <NavLink tag={Link} className="text-dark" to="/">Home</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink tag={Link} className="text-dark" to="/series">Series</NavLink>
+            </NavItem>
+            {isAuthenticated ? <span>Signed In</span> : <SignInButton />}
+          </ul>
+        </Collapse>
+      </Navbar>
+    </header>
+  );
 }

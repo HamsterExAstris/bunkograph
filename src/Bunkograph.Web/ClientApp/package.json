@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@azure/msal-browser": "^2.27.0",
+    "@azure/msal-react": "^1.4.3",
     "@types/jest": "^28.1.4",
     "@types/node": "^18.0.0",
     "@types/react": "^18.0.14",
