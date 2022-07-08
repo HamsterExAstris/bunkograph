@@ -1,7 +1,7 @@
 import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal } from "@azure/msal-react";
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Collapse, Navbar, NavbarBrand, NavItem, NavLink } from 'reactstrap';
+import { Button, Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
 import { loginRequest } from "../authConfig";
 import './NavMenu.css';
 import { SignInButton } from "./SignInButton";
@@ -11,9 +11,8 @@ export interface INavMenuState {
 }
 
 function ProfileContent() {
-  const { instance, accounts, inProgress } = useMsal();
+  const { instance, accounts } = useMsal();
   const [accessToken, setAccessToken] = useState<string | undefined>();
-  const [idToken, setIdToken] = useState<string | undefined>();
  
   const name = accounts[0] && accounts[0].name;
 
@@ -26,11 +25,9 @@ function ProfileContent() {
     // Silently acquires an access token which is then attached to a request for Microsoft Graph data
     instance.acquireTokenSilent(request).then((response) => {
       setAccessToken(response.accessToken);
-      setIdToken(response.idToken);
     }).catch((e) => {
       instance.acquireTokenPopup(request).then((response) => {
         setAccessToken(response.accessToken);
-        setIdToken(response.idToken);
       });
     });
   }
@@ -54,29 +51,11 @@ export const NavMenu: React.FC = () => {
     setCollapsed(!collapsed);
   }
 
-  /*
-  constructor(props: undefined) {
-    super(props);
-
-    this.toggleNavbar = this.toggleNavbar.bind(this);
-    this.state = {
-      collapsed: true
-    };
-  }
-
-  toggleNavbar () {
-    this.setState({
-      collapsed: !this.state.collapsed
-    });
-  }
-  */
-
   return (
     <header>
       <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" container light>
         <NavbarBrand tag={Link} to="/">Bunkograph.Web</NavbarBrand>
-        { // <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
-        }
+        <NavbarToggler onClick={toggleNavbar} className="mr-2" />
         <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!collapsed} navbar>
           <ul className="navbar-nav flex-grow">
             <NavItem>

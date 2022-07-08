@@ -43,7 +43,7 @@ async function populateSeriesData(instance: IPublicClientApplication, accounts: 
 }
 
 const Series: React.FC = () => {
-  const { instance, accounts, inProgress } = useMsal();
+  const { instance, accounts } = useMsal();
   const [seriesInfos, setSeriesInfos] = useState<ISeriesInfo[]>();
   const [seriesInfo, setSeriesInfo] = useState<ISeriesInfo | undefined>();
 
@@ -80,7 +80,7 @@ const Series: React.FC = () => {
       }
     }
     getAnswer();
-  }, [params.seriesId]);
+  }, [params.seriesId, instance, accounts]);
 
   return (
     <>
