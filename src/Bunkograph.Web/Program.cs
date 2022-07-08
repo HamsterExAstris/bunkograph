@@ -2,6 +2,8 @@
 using Bunkograph.DAL;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Web;
+using Microsoft.IdentityModel.Logging;
 
 namespace Bunkograph.Web
 {
@@ -41,6 +43,8 @@ namespace Bunkograph.Web
                 }
             });
 
+            builder.Services.AddMicrosoftIdentityWebApiAuthentication(builder.Configuration);
+
             WebApplication? app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -49,11 +53,17 @@ namespace Bunkograph.Web
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            else
+            {
+                IdentityModelEventSource.ShowPII = true;
+            }
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
 
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",
