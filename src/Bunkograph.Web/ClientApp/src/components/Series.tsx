@@ -1,4 +1,4 @@
-import { AccountInfo, AuthenticationResult, IPublicClientApplication } from "@azure/msal-browser";
+import { AccountInfo, AuthenticationResult, InteractionRequiredAuthError, IPublicClientApplication } from "@azure/msal-browser";
 import { useMsal } from "@azure/msal-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -22,9 +22,13 @@ async function populateSeriesData(instance: IPublicClientApplication, accounts: 
   try {
     tokenResponse = await instance.acquireTokenSilent(request);
   }
-  catch
+  catch (error)
   {
-    tokenResponse = await instance.acquireTokenPopup(request);
+    if (error instanceof InteractionRequiredAuthError) {
+      tokenResponse = await instance.acquireTokenPopup(request);
+    } else {
+      throw error;
+    }
   }
   const idToken = tokenResponse?.idToken;
 
