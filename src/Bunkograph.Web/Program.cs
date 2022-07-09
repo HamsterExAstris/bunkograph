@@ -9,7 +9,7 @@ namespace Bunkograph.Web
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
 
@@ -72,10 +72,10 @@ namespace Bunkograph.Web
             app.MapFallbackToFile("index.html");
 
             // Apply EF Core migrations.
-            using (IServiceScope? scope = app.Services.CreateScope())
+            await using (AsyncServiceScope scope = app.Services.CreateAsyncScope())
             {
-                BunkographContext? db = scope.ServiceProvider.GetRequiredService<BunkographContext>();
-                db.Database.Migrate();
+                await using BunkographContext? db = scope.ServiceProvider.GetRequiredService<BunkographContext>();
+                await db.Database.MigrateAsync();
             }
 
             app.Run();
