@@ -198,10 +198,14 @@ const GraphSample: React.FC<IGraphSampleProps> = (props) => {
       }
 
       for (let i = 0; i < en.length; i++) {
-        const releasejp = dayjs(jp[i].releaseDate);
-        const releaseen = dayjs(en[i].releaseDate);
-        if (releaseen && releasejp) {
-          leadtimes.push(releaseen.diff(releasejp, 'seconds'));
+        const releasejp = jp[i];
+        if (releasejp)
+        {
+          const releasedatejp = dayjs(releasejp.releaseDate);
+          const releaseen = dayjs(en[i].releaseDate);
+          if (releaseen && releasedatejp) {
+            leadtimes.push(releaseen.diff(releasedatejp, 'seconds'));
+          }
         }
       }
 
