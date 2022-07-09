@@ -6,6 +6,7 @@
         public string OriginalName { get; set; }
         public string EnglishName { get; set; }
         public string? EnglishKey { get; set; }
+        public CompletionStatus? CompletionStatus { get; set; }
 
         public Series(string originalName, string englishName)
         {
