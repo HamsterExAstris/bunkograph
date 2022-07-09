@@ -1,7 +1,7 @@
 import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal } from "@azure/msal-react";
 import React, { useState } from 'react';
+import { Button, Container, Nav, Navbar, NavItem } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { Button, Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
 import { loginRequest } from "../authConfig";
 import './NavMenu.css';
 import { SignInButton } from "./SignInButton";
@@ -53,25 +53,27 @@ export const NavMenu: React.FC = () => {
 
   return (
     <header>
-      <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" container light>
-        <NavbarBrand tag={Link} to="/">Bunkograph.Web</NavbarBrand>
-        <NavbarToggler onClick={toggleNavbar} className="mr-2" />
-        <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!collapsed} navbar>
-          <ul className="navbar-nav flex-grow">
-            <NavItem>
-              <NavLink tag={Link} className="text-dark" to="/">Home</NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink tag={Link} className="text-dark" to="/series">Series</NavLink>
-            </NavItem>
-            <AuthenticatedTemplate>
-              <ProfileContent />
-            </AuthenticatedTemplate>
-            <UnauthenticatedTemplate>
-              <SignInButton />
-            </UnauthenticatedTemplate>
-          </ul>
-        </Collapse>
+      <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" bg="light">
+        <Container>
+          <Navbar.Brand as={Link} to="/">Bunkograph.Web</Navbar.Brand>
+          <Navbar.Toggle onClick={toggleNavbar} className="mr-2" />
+          <Navbar.Collapse className="d-sm-inline-flex flex-sm-row-reverse" role="navigation">
+            <ul className="navbar-nav flex-grow">
+              <NavItem>
+                <Nav.Link as={Link} className="text-dark" to="/">Home</Nav.Link>
+              </NavItem>
+              <NavItem>
+                <Nav.Link as={Link} className="text-dark" to="/series">Series</Nav.Link>
+              </NavItem>
+              <AuthenticatedTemplate>
+                <ProfileContent />
+              </AuthenticatedTemplate>
+              <UnauthenticatedTemplate>
+                <SignInButton />
+              </UnauthenticatedTemplate>
+            </ul>
+            </Navbar.Collapse>
+          </Container>
       </Navbar>
     </header>
   );
