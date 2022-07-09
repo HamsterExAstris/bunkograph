@@ -69,7 +69,7 @@ namespace Bunkograph.JNovelClubImport
 
                         if (author is not null)
                         {
-                            Models.Author? modelAuthor = await context.Authors.FirstOrDefaultAsync(a => a.RomanizedName == author.Name);
+                            Models.Author? modelAuthor = await context.Authors.FirstOrDefaultServerAndLocalAsync(a => a.RomanizedName == author.Name);
                             if (modelAuthor is null)
                             {
                                 modelAuthor = new Models.Author()
