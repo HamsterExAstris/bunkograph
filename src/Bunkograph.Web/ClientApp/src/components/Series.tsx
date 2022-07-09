@@ -1,8 +1,8 @@
 import { AccountInfo, AuthenticationResult, InteractionRequiredAuthError, IPublicClientApplication } from "@azure/msal-browser";
 import { useMsal } from "@azure/msal-react";
 import { useEffect, useState } from "react";
+import { Form } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
-import { Input } from "reactstrap";
 import { loginRequest } from "../authConfig";
 import GraphSample from "./BookSeriesGraph";
 
@@ -50,7 +50,7 @@ const Series: React.FC = () => {
   const navigate = useNavigate();
   const params = useParams();
 
-  const setSeries = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const setSeries = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const seriesId = parseInt(e.target.value);
     if (seriesId) {
       navigate('/series/' + seriesId);
@@ -86,14 +86,14 @@ const Series: React.FC = () => {
     <>
       {
         seriesInfos &&
-        <Input type="select" aria-label="Default select example" onChange={setSeries}>
+        <Form.Select aria-label="Default select example" onChange={setSeries}>
             {
               !seriesInfo && <option value={0}>Please select a series</option>
             }
             {
               seriesInfos.map((value: ISeriesInfo) => <option key={value.seriesId} value={value.seriesId}>{value.englishName}</option>)
             }
-        </Input>
+          </Form.Select>
       }
       {
         seriesInfo && <GraphSample seriesInfo={seriesInfo} />

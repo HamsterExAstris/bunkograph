@@ -1,6 +1,6 @@
 import { IPublicClientApplication } from "@azure/msal-browser";
 import { useMsal } from "@azure/msal-react";
-import { Button } from "reactstrap";
+import { Button } from "react-bootstrap";
 import { loginRequest } from "../authConfig";
 
 function handleLogin(instance: IPublicClientApplication) {
