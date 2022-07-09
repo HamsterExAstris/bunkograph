@@ -210,7 +210,7 @@ const GraphSample: React.FC<IGraphSampleProps> = (props) => {
       }
 
       const now = dayjs();
-      const isFinished = false; // this.isFinishedPublication();
+      const isFinished = props.seriesInfo.completionStatus && props.seriesInfo.completionStatus !== "None" && props.seriesInfo.completionStatus !== "OneShot";
       const hasNoSource = false; // this.isHasNoSource();
       let nextjp: dayjs.Dayjs | undefined;
       let nexten: dayjs.Dayjs | undefined;
@@ -495,7 +495,7 @@ const GraphSample: React.FC<IGraphSampleProps> = (props) => {
       }
     }
     getAnswer();
-  }, [props.seriesInfo.seriesId, props.seriesInfo.englishName, props.seriesInfo.publisher]);
+  }, [props.seriesInfo.seriesId, props.seriesInfo.englishName, props.seriesInfo.publisher, props.seriesInfo.completionStatus]);
 
   return (
     <>

@@ -1,7 +1,6 @@
 ﻿using Bunkograph.DAL;
 using Bunkograph.Models;
 
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,7 +21,6 @@ namespace Bunkograph.Web.Controllers
 
         // GET: api/<SeriesController>
         [HttpGet]
-        [Authorize]
         public IAsyncEnumerable<Series> Get()
         {
             return _context.Series.OrderBy(s => s.EnglishName).AsAsyncEnumerable();

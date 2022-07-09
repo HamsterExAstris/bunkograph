@@ -22,6 +22,10 @@ namespace Bunkograph.DAL
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Series>()
+                .Property(p => p.CompletionStatus)
+                .HasConversion<string>();
+
             modelBuilder.Entity<SeriesBook>()
                 .HasKey(k => new { k.SeriesId, k.BookId });
         }
