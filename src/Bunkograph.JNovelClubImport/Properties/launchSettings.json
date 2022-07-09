@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Bunkograph.JNovelClubImport": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

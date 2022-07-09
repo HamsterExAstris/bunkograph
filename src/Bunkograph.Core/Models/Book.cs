@@ -43,6 +43,7 @@ namespace Bunkograph.Models
                 return result.ToString();
             }
         }
+        public string? EnglishKey { get; set; }
 
         public ICollection<SeriesBook> SeriesBooks { get; set; } = new List<SeriesBook>();
         public ICollection<BookEdition> Editions { get; set; } = new List<BookEdition>();

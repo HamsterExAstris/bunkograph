@@ -1,7 +1,9 @@
 ﻿using Bunkograph.DAL;
 using Bunkograph.Models;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -20,9 +22,10 @@ namespace Bunkograph.Web.Controllers
 
         // GET: api/<SeriesController>
         [HttpGet]
+        [Authorize]
         public IAsyncEnumerable<Series> Get()
         {
-            return _context.Series.AsAsyncEnumerable();
+            return _context.Series.OrderBy(s => s.EnglishName).AsAsyncEnumerable();
         }
 
         // GET api/<SeriesController>/5

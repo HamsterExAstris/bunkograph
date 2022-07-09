@@ -11,10 +11,12 @@ namespace Bunkograph.DAL
         {
         }
 
+        public DbSet<Author> Authors => Set<Author>();
         public DbSet<Series> Series => Set<Series>();
         public DbSet<SeriesBook> SeriesBooks => Set<SeriesBook>();
         public DbSet<Book> Books => Set<Book>();
         public DbSet<BookEdition> BookEditions => Set<BookEdition>();
+        public DbSet<Publisher> Publishers => Set<Publisher>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
