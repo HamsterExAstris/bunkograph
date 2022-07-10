@@ -1,4 +1,6 @@
-﻿namespace Bunkograph.Models
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace Bunkograph.Models
 {
     public class SeriesBook
     {
@@ -19,6 +21,7 @@
             set => _book = value;
         }
 
+        [Precision(6, 2)]
         public decimal SortOrder { get; set; }
         public string SortOrderString => (SortOrder == (int)SortOrder)
                     ? SortOrder.ToString("F0")

@@ -1,9 +1,9 @@
-import dayjs from 'dayjs'
+import dayjs from 'dayjs';
 import Highcharts, { PointMarkerOptionsObject, PointOptionsObject } from 'highcharts';
-import highchartsAccessibility from "highcharts/modules/accessibility";
 import HighchartsReact from 'highcharts-react-official';
+import highchartsAccessibility from "highcharts/modules/accessibility";
 import { useEffect, useState } from 'react';
-import { ISeriesInfo } from './Series';
+import { CompletionStatus, ISeriesInfo } from './series/Series';
 
 // Initialize Highcharts for accessibility.
 highchartsAccessibility(Highcharts);
@@ -210,7 +210,7 @@ const GraphSample: React.FC<IGraphSampleProps> = (props) => {
       }
 
       const now = dayjs();
-      const isFinished = props.seriesInfo.completionStatus && props.seriesInfo.completionStatus !== "None" && props.seriesInfo.completionStatus !== "OneShot";
+      const isFinished = props.seriesInfo.completionStatus && props.seriesInfo.completionStatus !== CompletionStatus.OneShot;
       const hasNoSource = false; // this.isHasNoSource();
       let nextjp: dayjs.Dayjs | undefined;
       let nexten: dayjs.Dayjs | undefined;

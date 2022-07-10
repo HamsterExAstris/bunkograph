@@ -1,4 +1,6 @@
-﻿namespace Bunkograph.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Bunkograph.Models
 {
     public class BookEdition
     {
@@ -18,6 +20,7 @@
             set => _publisher = value;
         }
 
+        [MaxLength(2)]
         public string Language { get; set; }
         public DateOnly ReleaseDate { get; set; }
 

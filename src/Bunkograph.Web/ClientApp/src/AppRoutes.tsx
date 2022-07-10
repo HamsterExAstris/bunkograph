@@ -1,5 +1,7 @@
 import { Home } from "./components/Home";
-import Series from "./components/Series";
+import Series from "./components/series/Series";
+import SeriesDetails from "./components/series/SeriesDetails";
+import SeriesEdit from "./components/series/SeriesEdit";
 
 const AppRoutes = [
   {
@@ -12,7 +14,13 @@ const AppRoutes = [
   },
   {
     path: '/series/:seriesId',
-    element: <Series />
+    //requireAuth: true,
+    element: <SeriesDetails />
+  },
+  {
+    path: '/series/:seriesId/edit',
+    //requireAuth: true,
+    element: <SeriesEdit />
   },
 ];
 
