@@ -3,6 +3,7 @@ using System;
 using Bunkograph.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bunkograph.DAL.Migrations
 {
     [DbContext(typeof(BunkographContext))]
-    partial class BunkographContextModelSnapshot : ModelSnapshot
+    [Migration("20220710012628_LimitLanguageLength")]
+    partial class LimitLanguageLength
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -97,12 +99,7 @@ namespace Bunkograph.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("ParentPublisherPublisherId")
-                        .HasColumnType("int");
-
                     b.HasKey("PublisherId");
-
-                    b.HasIndex("ParentPublisherPublisherId");
 
                     b.ToTable("Publishers");
                 });
@@ -182,15 +179,6 @@ namespace Bunkograph.DAL.Migrations
                     b.Navigation("Book");
 
                     b.Navigation("Publisher");
-                });
-
-            modelBuilder.Entity("Bunkograph.Models.Publisher", b =>
-                {
-                    b.HasOne("Bunkograph.Models.Publisher", "ParentPublisher")
-                        .WithMany()
-                        .HasForeignKey("ParentPublisherPublisherId");
-
-                    b.Navigation("ParentPublisher");
                 });
 
             modelBuilder.Entity("Bunkograph.Models.SeriesBook", b =>

@@ -3,8 +3,8 @@
     public class Series
     {
         public int SeriesId { get; set; }
-        public string OriginalName { get; set; }
         public string EnglishName { get; set; }
+        public string OriginalName { get; set; }
         public string? EnglishKey { get; set; }
         public CompletionStatus? CompletionStatus { get; set; }
 
