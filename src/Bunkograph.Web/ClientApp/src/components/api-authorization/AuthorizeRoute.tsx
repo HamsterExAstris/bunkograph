@@ -1,9 +1,18 @@
-import { UnauthenticatedTemplate } from '@azure/msal-react'
-import React, { Component } from 'react'
+import { AuthenticatedTemplate, UnauthenticatedTemplate } from '@azure/msal-react'
+import React, { Component, ReactElement } from 'react'
 import { Navigate } from 'react-router-dom'
 import { ApplicationPaths, QueryParameterNames } from './ApiAuthorizationConstants'
 
-export default class AuthorizeRoute extends Component {
+export interface IAuthorizeRouteProps {
+  path: string,
+  element: ReactElement
+}
+
+interface IAuthoriseRouteState {
+  ready: boolean
+}
+
+export default class AuthorizeRoute extends Component<IAuthorizeRouteProps, IAuthoriseRouteState> {
   render() {
     const { ready } = this.state;
     var link = document.createElement("a");
