@@ -13,6 +13,7 @@ namespace Bunkograph.Models
             set => _book = value;
         }
 
+        public int PublisherId { get; set; }
         private Publisher? _publisher;
         public Publisher Publisher
         {

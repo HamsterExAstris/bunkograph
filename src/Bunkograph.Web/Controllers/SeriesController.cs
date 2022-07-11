@@ -1,6 +1,8 @@
 ﻿using Bunkograph.DAL;
 using Bunkograph.Models;
+using Bunkograph.Web.ViewModels;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,6 +36,95 @@ namespace Bunkograph.Web.Controllers
             return series is null
                 ? NotFound()
                 : Ok(series);
+        }
+
+        // GET api/<SeriesController>/volumes/5
+        [HttpGet("volumes/{id}")]
+        public async Task<IActionResult> GetVolumes(int id)
+        {
+            Series? series = await _context.Series
+                .Include(s => s.SeriesBooks)
+                .ThenInclude(sb => sb.Book)
+                .ThenInclude(b => b.Editions)
+                .FirstOrDefaultAsync(s => s.SeriesId == id);
+            if (series is null)
+            {
+                return NotFound();
+            }
+
+            SeriesDTO? result = new SeriesDTO
+            {
+                SeriesId = series.SeriesId
+            };
+
+            IEnumerable<BookDTO>? books = series.SeriesBooks.Select(s => s.Book)
+                .Select(b => new BookDTO
+                {
+                    BookId = b.BookId,
+                    Editions = b.Editions.ToDictionary(k => k.Language, v => new BookEditionDTO
+                    {
+                        PublisherId = v.PublisherId,
+                        ReleaseDate = v.ReleaseDate.ToDateTime(TimeOnly.MinValue)
+                    })
+                });
+            result.Books = books;
+            return Ok(result);
+        }
+
+        // GET api/<SeriesController>/volumes/5
+        [HttpPost("volumes/{id}")]
+        [Authorize("Luxae.ChargingMabab")]
+        public async Task<IActionResult> PostVolumes(int id, SeriesDTO seriesDto)
+        {
+            Series? series = await _context.Series
+                .Include(s => s.SeriesBooks)
+                .ThenInclude(sb => sb.Book)
+                .ThenInclude(b => b.Editions)
+                .FirstOrDefaultAsync(s => s.SeriesId == id);
+            if (series is null)
+            {
+                return NotFound();
+            }
+
+            foreach (BookDTO? bookDto in seriesDto.Books)
+            {
+                SeriesBook? seriesBook = series.SeriesBooks.FirstOrDefault(sb => sb.BookId == bookDto.BookId);
+                if (seriesBook is null)
+                {
+                    Book? book = await _context.Books.FindAsync(bookDto.BookId);
+                    if (book is null)
+                    {
+                        return BadRequest("Book " + bookDto.BookId + " not found.");
+                    }
+
+                    decimal sortOrder = series.SeriesBooks.Any()
+                        ? series.SeriesBooks.Select(s => s.SortOrder).Max() + 1
+                        : 1;
+                    seriesBook = new SeriesBook
+                    {
+                        Series = series,
+                        Book = book,
+                        SortOrder = sortOrder
+                    };
+                    series.SeriesBooks.Add(seriesBook);
+                }
+
+                // No way to delete here. This is intentional.
+                foreach (KeyValuePair<string, BookEditionDTO> bookEditionDto in bookDto.Editions)
+                {
+                    BookEdition? bookEdition = seriesBook.Book.Editions.FirstOrDefault(be => be.Language == bookEditionDto.Key);
+                    if (bookEdition is null)
+                    {
+                        bookEdition = new BookEdition(bookEditionDto.Key, DateOnly.FromDateTime(bookEditionDto.Value.ReleaseDate));
+                        seriesBook.Book.Editions.Add(bookEdition);
+                    }
+                    bookEdition.PublisherId = bookEditionDto.Value.PublisherId;
+                    bookEdition.ReleaseDate = DateOnly.FromDateTime(bookEditionDto.Value.ReleaseDate);
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            return Ok();
         }
 
         // POST api/<SeriesController>

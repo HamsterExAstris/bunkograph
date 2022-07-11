@@ -1,5 +1,6 @@
 import { Home } from "./components/Home";
 import Series from "./components/series/Series";
+import SeriesBooks from "./components/series/SeriesBooks";
 import SeriesDetails from "./components/series/SeriesDetails";
 import SeriesEdit from "./components/series/SeriesEdit";
 
@@ -21,6 +22,11 @@ const AppRoutes = [
     path: '/series/:seriesId/edit',
     //requireAuth: true,
     element: <SeriesEdit />
+  },
+  {
+    path: '/series/:seriesId/editvolumes',
+    //requireAuth: true,
+    element: <SeriesBooks />
   },
 ];
 

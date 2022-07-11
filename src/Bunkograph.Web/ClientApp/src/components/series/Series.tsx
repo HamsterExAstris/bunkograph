@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
+import Loading from "../Loading";
 
 export interface ISeriesInfo {
   seriesId: number,
@@ -37,6 +38,9 @@ const Series: React.FC = () => {
 
   return (
     <>
+      {
+        !seriesInfos && <Loading />
+      }
       <p>
         <a asp-action="Create" href="https://www.google.com" target="_blank" rel="noreferrer">Create New</a>
       </p>
@@ -79,6 +83,12 @@ const Series: React.FC = () => {
                     to={`/series/${value.seriesId}`}
                   >
                     Details
+                  </Link>
+                  {" "}
+                  <Link
+                    to={`/series/${value.seriesId}/editvolumes`}
+                  >
+                    Volumes
                   </Link>
                   { /* <a asp-action="Delete" asp-route-id="@item.SeriesId">Delete</a> */}
                 </td>
