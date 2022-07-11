@@ -138,7 +138,7 @@ const SeriesBooks: React.FC = () => {
                 </Form.Group>
                 {
                   languages.map((language) =>
-                    <Row className="mb-3" key={book.bookId + "_" + language}>
+                    <Row className="mb-3" key={language}>
                       <>
                         <Form.Group as={Col}>
                           <Form.Label>Language</Form.Label>
