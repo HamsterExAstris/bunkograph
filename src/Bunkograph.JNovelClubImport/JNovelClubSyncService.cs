@@ -90,7 +90,7 @@ namespace Bunkograph.JNovelClubImport
                     }
 
                     DateOnly publishing = apiVolume.Publishing.HasValue ? DateOnly.FromDateTime(apiVolume.Publishing.Value) : DateOnly.MaxValue;
-                    Models.BookEdition? edition = dbSeriesBook.Book.Editions.FirstOrDefault(e => e.Language == "en");
+                    Models.BookEdition? edition = dbSeriesBook.Book.Editions.FirstOrDefault(e => e.LanguageId == "en");
                     if (edition is null)
                     {
                         edition = new Models.BookEdition("en", publishing)

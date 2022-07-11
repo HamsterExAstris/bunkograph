@@ -12,6 +12,7 @@ namespace Bunkograph.DAL
         }
 
         public DbSet<Author> Authors => Set<Author>();
+        public DbSet<Language> Languages => Set<Language>();
         public DbSet<Series> Series => Set<Series>();
         public DbSet<SeriesBook> SeriesBooks => Set<SeriesBook>();
         public DbSet<Book> Books => Set<Book>();

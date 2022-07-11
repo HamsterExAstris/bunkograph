@@ -61,7 +61,7 @@ namespace Bunkograph.Web.Controllers
                 .Select(b => new BookDTO
                 {
                     BookId = b.BookId,
-                    Editions = b.Editions.ToDictionary(k => k.Language, v => new BookEditionDTO
+                    Editions = b.Editions.ToDictionary(k => k.LanguageId, v => new BookEditionDTO
                     {
                         PublisherId = v.PublisherId,
                         ReleaseDate = v.ReleaseDate.ToDateTime(TimeOnly.MinValue)
@@ -112,7 +112,7 @@ namespace Bunkograph.Web.Controllers
                 // No way to delete here. This is intentional.
                 foreach (KeyValuePair<string, BookEditionDTO> bookEditionDto in bookDto.Editions)
                 {
-                    BookEdition? bookEdition = seriesBook.Book.Editions.FirstOrDefault(be => be.Language == bookEditionDto.Key);
+                    BookEdition? bookEdition = seriesBook.Book.Editions.FirstOrDefault(be => be.LanguageId == bookEditionDto.Key);
                     if (bookEdition is null)
                     {
                         bookEdition = new BookEdition(bookEditionDto.Key, DateOnly.FromDateTime(bookEditionDto.Value.ReleaseDate));
