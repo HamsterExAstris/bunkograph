@@ -64,7 +64,6 @@ namespace Bunkograph.Web.Controllers
                     BookId = b.BookId,
                     Editions = b.Editions.ToDictionary(k => k.SeriesLicense.LanguageId, v => new BookEditionDTO
                     {
-                        PublisherId = v.PublisherId,
                         ReleaseDate = v.ReleaseDate.ToDateTime(TimeOnly.MinValue),
                         Language = v.SeriesLicense.LanguageId,
                         SeriesLicenseId = v.SeriesLicenseId
@@ -129,7 +128,6 @@ namespace Bunkograph.Web.Controllers
                         bookEdition = new BookEdition(license, DateOnly.FromDateTime(bookEditionDto.Value.ReleaseDate));
                         seriesBook.Book.Editions.Add(bookEdition);
                     }
-                    bookEdition.PublisherId = bookEditionDto.Value.PublisherId;
                     bookEdition.ReleaseDate = DateOnly.FromDateTime(bookEditionDto.Value.ReleaseDate);
                 }
             }

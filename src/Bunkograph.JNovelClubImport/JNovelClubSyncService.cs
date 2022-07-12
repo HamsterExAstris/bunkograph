@@ -112,10 +112,7 @@ namespace Bunkograph.JNovelClubImport
                     Models.BookEdition? edition = dbSeriesBook.Book.Editions.FirstOrDefault(e => e.SeriesLicense.LanguageId == "en");
                     if (edition is null)
                     {
-                        edition = new Models.BookEdition(seriesLicense, publishing)
-                        {
-                            Publisher = publisher
-                        };
+                        edition = new Models.BookEdition(seriesLicense, publishing);
                         dbSeriesBook.Book.Editions.Add(edition);
                     }
                     else

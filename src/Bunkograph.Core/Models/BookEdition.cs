@@ -11,14 +11,6 @@
             set => _book = value;
         }
 
-        public int PublisherId { get; set; }
-        private Publisher? _publisher;
-        public Publisher Publisher
-        {
-            get => _publisher ?? throw new InvalidOperationException("Uninitialized property: " + nameof(Publisher));
-            set => _publisher = value;
-        }
-
         public int SeriesLicenseId { get; set; }
         private SeriesLicense? _seriesLicense;
         public SeriesLicense SeriesLicense

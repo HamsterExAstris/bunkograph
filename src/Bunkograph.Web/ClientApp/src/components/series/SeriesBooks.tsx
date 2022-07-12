@@ -32,7 +32,6 @@ const fixDates = (item: Record<string, any>, dateFields: string[]) => {
 type Language = "jp" | "en" | "ab"
 
 interface IBookEdition {
-  publisherId?: number
   releaseDate?: Date
   language?: Language
   seriesLicenseId?: number
@@ -149,10 +148,6 @@ const SeriesBooks: React.FC = () => {
                         <Form.Group as={Col}>
                           <Form.Label>SeriesLicenseId</Form.Label>
                           <Form.Control plaintext readOnly defaultValue={book.editions[language].seriesLicenseId} />
-                        </Form.Group>
-                        <Form.Group as={Col}>
-                          <Form.Label>PublisherId</Form.Label>
-                          <Form.Control type="number" step="1" defaultValue={book.editions[language].publisherId} />
                         </Form.Group>
                         <Form.Group as={Col}>
                           <Form.Label>Release Date</Form.Label>
