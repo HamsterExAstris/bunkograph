@@ -27,6 +27,7 @@ namespace Bunkograph.Web.Controllers
                 .Where(sb => sb.Series.SeriesId == seriesId)
                 .Include(sb => sb.Book)
                 .ThenInclude(b => b.Editions)
+                .ThenInclude(be => be.SeriesLicense)
                 .AsAsyncEnumerable())
             {
                 foreach (Models.BookEdition? bookEdition in seriesBook.Book.Editions)

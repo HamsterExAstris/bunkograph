@@ -34,6 +34,8 @@ type Language = "jp" | "en" | "ab"
 interface IBookEdition {
   publisherId?: number
   releaseDate?: Date
+  language?: Language
+  seriesLicenseId?: number
 }
 
 interface IBook {
@@ -145,11 +147,15 @@ const SeriesBooks: React.FC = () => {
                           <Form.Control plaintext readOnly defaultValue={language} />
                         </Form.Group>
                         <Form.Group as={Col}>
+                          <Form.Label>SeriesLicenseId</Form.Label>
+                          <Form.Control plaintext readOnly defaultValue={book.editions[language].seriesLicenseId} />
+                        </Form.Group>
+                        <Form.Group as={Col}>
                           <Form.Label>PublisherId</Form.Label>
                           <Form.Control type="number" step="1" defaultValue={book.editions[language].publisherId} />
                         </Form.Group>
                         <Form.Group as={Col}>
-                          <Form.Label>Language</Form.Label>
+                          <Form.Label>Release Date</Form.Label>
                           <Form.Control type="date" defaultValue={book.editions[language].releaseDate?.toISOString()?.substring(0, 10)} />
                         </Form.Group>
                       </>

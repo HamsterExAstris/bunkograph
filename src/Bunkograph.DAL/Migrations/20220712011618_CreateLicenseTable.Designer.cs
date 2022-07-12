@@ -3,6 +3,7 @@ using System;
 using Bunkograph.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bunkograph.DAL.Migrations
 {
     [DbContext(typeof(BunkographContext))]
-    partial class BunkographContextModelSnapshot : ModelSnapshot
+    [Migration("20220712011618_CreateLicenseTable")]
+    partial class CreateLicenseTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -260,7 +262,7 @@ namespace Bunkograph.DAL.Migrations
 
             modelBuilder.Entity("Bunkograph.Models.SeriesLicense", b =>
                 {
-                    b.HasOne("Bunkograph.Models.Language", "Language")
+                    b.HasOne("Bunkograph.Models.Language", "Lanuage")
                         .WithMany()
                         .HasForeignKey("LanguageId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -278,7 +280,7 @@ namespace Bunkograph.DAL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Language");
+                    b.Navigation("Lanuage");
 
                     b.Navigation("Publisher");
 

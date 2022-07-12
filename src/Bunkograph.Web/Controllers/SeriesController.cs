@@ -46,6 +46,7 @@ namespace Bunkograph.Web.Controllers
                 .Include(s => s.SeriesBooks)
                 .ThenInclude(sb => sb.Book)
                 .ThenInclude(b => b.Editions)
+                .ThenInclude(be => be.SeriesLicense)
                 .FirstOrDefaultAsync(s => s.SeriesId == id);
             if (series is null)
             {
@@ -61,10 +62,12 @@ namespace Bunkograph.Web.Controllers
                 .Select(b => new BookDTO
                 {
                     BookId = b.BookId,
-                    Editions = b.Editions.ToDictionary(k => k.LanguageId, v => new BookEditionDTO
+                    Editions = b.Editions.ToDictionary(k => k.SeriesLicense.LanguageId, v => new BookEditionDTO
                     {
                         PublisherId = v.PublisherId,
-                        ReleaseDate = v.ReleaseDate.ToDateTime(TimeOnly.MinValue)
+                        ReleaseDate = v.ReleaseDate.ToDateTime(TimeOnly.MinValue),
+                        Language = v.SeriesLicense.LanguageId,
+                        SeriesLicenseId = v.SeriesLicenseId
                     })
                 });
             result.Books = books;
@@ -80,6 +83,7 @@ namespace Bunkograph.Web.Controllers
                 .Include(s => s.SeriesBooks)
                 .ThenInclude(sb => sb.Book)
                 .ThenInclude(b => b.Editions)
+                .ThenInclude(be => be.SeriesLicense)
                 .FirstOrDefaultAsync(s => s.SeriesId == id);
             if (series is null)
             {
@@ -112,10 +116,17 @@ namespace Bunkograph.Web.Controllers
                 // No way to delete here. This is intentional.
                 foreach (KeyValuePair<string, BookEditionDTO> bookEditionDto in bookDto.Editions)
                 {
-                    BookEdition? bookEdition = seriesBook.Book.Editions.FirstOrDefault(be => be.LanguageId == bookEditionDto.Key);
+                    BookEdition? bookEdition = seriesBook.Book.Editions.FirstOrDefault(be => be.SeriesLicense.LanguageId == bookEditionDto.Key);
                     if (bookEdition is null)
                     {
-                        bookEdition = new BookEdition(bookEditionDto.Key, DateOnly.FromDateTime(bookEditionDto.Value.ReleaseDate));
+                        // The series license has to exist already for use to use this page.
+                        SeriesLicense? license = await _context.SeriesLicenses.FindAsync(bookEditionDto.Key);
+                        if (license is null)
+                        {
+                            return BadRequest("Series license " + bookEditionDto.Key + " not found.");
+                        }
+
+                        bookEdition = new BookEdition(license, DateOnly.FromDateTime(bookEditionDto.Value.ReleaseDate));
                         seriesBook.Book.Editions.Add(bookEdition);
                     }
                     bookEdition.PublisherId = bookEditionDto.Value.PublisherId;

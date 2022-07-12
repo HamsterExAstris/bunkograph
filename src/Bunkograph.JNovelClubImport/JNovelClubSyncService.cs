@@ -35,10 +35,12 @@ namespace Bunkograph.JNovelClubImport
             IEnumerable<DTOs.Series>? allSeries = await _client.GetSeriesAsync();
             foreach (DTOs.Series? apiSeries in allSeries.Where(s => s.Type == "NOVEL"))
             {
+                Models.SeriesLicense? seriesLicense = null;
                 Models.Series? dbSeries = await context.Series
                     .Include(s => s.SeriesBooks)
                     .ThenInclude(sb => sb.Book)
                     .ThenInclude(b => b.Editions)
+                    .ThenInclude(be => be.SeriesLicense)
                     .FirstOrDefaultAsync(s => s.EnglishKey == apiSeries.Slug);
                 if (dbSeries is null)
                 {
@@ -47,6 +49,23 @@ namespace Bunkograph.JNovelClubImport
                         EnglishKey = apiSeries.Slug
                     };
                     context.Series.Add(dbSeries);
+                }
+                else
+                {
+                    seriesLicense = await context.SeriesLicenses.FirstOrDefaultAsync(sl => sl.LanguageId == "en"
+                        && sl.PublisherId == publisher.PublisherId
+                        && sl.SeriesId == dbSeries.SeriesId);
+                }
+
+                if (seriesLicense is null)
+                {
+                    seriesLicense = new Models.SeriesLicense
+                    {
+                        Publisher = publisher,
+                        LanguageId = "en",
+                        Series = dbSeries
+                    };
+                    context.SeriesLicenses.Add(seriesLicense);
                 }
 
                 IEnumerable<DTOs.Volume>? volumes = await _client.GetSeriesVolumesAsync(apiSeries);
@@ -90,10 +109,10 @@ namespace Bunkograph.JNovelClubImport
                     }
 
                     DateOnly publishing = apiVolume.Publishing.HasValue ? DateOnly.FromDateTime(apiVolume.Publishing.Value) : DateOnly.MaxValue;
-                    Models.BookEdition? edition = dbSeriesBook.Book.Editions.FirstOrDefault(e => e.LanguageId == "en");
+                    Models.BookEdition? edition = dbSeriesBook.Book.Editions.FirstOrDefault(e => e.SeriesLicense.LanguageId == "en");
                     if (edition is null)
                     {
-                        edition = new Models.BookEdition("en", publishing)
+                        edition = new Models.BookEdition(seriesLicense, publishing)
                         {
                             Publisher = publisher
                         };

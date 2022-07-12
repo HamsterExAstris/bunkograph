@@ -19,19 +19,25 @@
             set => _publisher = value;
         }
 
-        public string LanguageId { get; set; }
-        private Language? _language;
-        public Language Language
+        public int SeriesLicenseId { get; set; }
+        private SeriesLicense? _seriesLicense;
+        public SeriesLicense SeriesLicense
         {
-            get => _language ?? throw new InvalidOperationException("Uninitialized property: " + nameof(Language));
-            set => _language = value;
+            get => _seriesLicense ?? throw new InvalidOperationException("Uninitialized property: " + nameof(SeriesLicense));
+            set => _seriesLicense = value;
         }
 
         public DateOnly ReleaseDate { get; set; }
 
-        public BookEdition(string languageId, DateOnly releaseDate)
+        public BookEdition(SeriesLicense seriesLicense, DateOnly releaseDate)
         {
-            LanguageId = languageId;
+            SeriesLicense = seriesLicense;
+            ReleaseDate = releaseDate;
+        }
+
+        public BookEdition(int seriesLicenseId, DateOnly releaseDate)
+        {
+            SeriesLicenseId = seriesLicenseId;
             ReleaseDate = releaseDate;
         }
     }
