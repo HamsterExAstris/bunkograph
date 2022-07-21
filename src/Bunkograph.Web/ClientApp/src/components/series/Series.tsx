@@ -6,12 +6,28 @@ export interface ISeriesInfo {
   seriesId: number,
   originalName: string,
   englishName: string,
-  publisher?: string,
-  completionStatus?: CompletionStatus
+  licenses: ISeriesLicense[]
+  originalLicense?: ISeriesLicense
+  englishLicense?: ISeriesLicense
+}
+
+interface IPublisher {
+  name: string
+}
+
+interface ILangugage {
+  languageId: string
+}
+
+interface ISeriesLicense {
+  seriesLicenseId: number,
+  language: ILangugage,
+  completionStatus?: CompletionStatus,
+  publisher: IPublisher
 }
 
 export enum CompletionStatus {
-  None,
+  Ongoing,
   OneShot,
   Completed,
   Cancelled,
@@ -21,7 +37,18 @@ async function populateSeriesData() {
   const response = await fetch('api/series');
   const data = await response.json();
 
-  return data as ISeriesInfo[];
+  const result = data as ISeriesInfo[];
+  for (const series of result) {
+    for (const license of series.licenses) {
+      if (license.language.languageId === "jp") {
+        series.originalLicense = license;
+      } else if (license.language.languageId === "en") {
+        series.englishLicense = license;
+      }
+    }
+  }
+
+  return result;
 }
 
 const Series: React.FC = () => {
@@ -34,7 +61,7 @@ const Series: React.FC = () => {
       setSeriesInfos(series);
     }
     getAnswer();
-  });
+  }, []);
 
   return (
     <>
@@ -70,7 +97,11 @@ const Series: React.FC = () => {
                   {value.englishName}
                 </td>
                 <td>
-                  {value.completionStatus && CompletionStatus[value.completionStatus]}
+                  {
+                    value.licenses.map((licenseValue) => <div key={licenseValue.seriesLicenseId}>
+                      {licenseValue.language.languageId}: {(licenseValue.completionStatus && CompletionStatus[licenseValue.completionStatus]) || "Ongoing"}
+                      <br /></div>)
+                  }
                 </td>
                 <td>
                   <Link

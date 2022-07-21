@@ -23,9 +23,25 @@ namespace Bunkograph.Web.Controllers
 
         // GET: api/<SeriesController>
         [HttpGet]
-        public IAsyncEnumerable<Series> Get()
+        public IAsyncEnumerable<SeriesDTO> Get()
         {
-            return _context.Series.OrderBy(s => s.EnglishName).AsAsyncEnumerable();
+            return _context.Series
+                .Include(s => s.SeriesLicenses)
+                .OrderBy(s => s.EnglishName)
+                .Select(s => new SeriesDTO
+                {
+                    SeriesId = s.SeriesId,
+                    EnglishName = s.EnglishName,
+                    OriginalName = s.OriginalName,
+                    Licenses = s.SeriesLicenses.Select(sl => new SeriesLicenseDTO
+                    {
+                        SeriesLicenseId = sl.SeriesLicenseId,
+                        Language = sl.Language,
+                        Publisher = sl.Publisher,
+                        CompletionStatus = sl.CompletionStatus
+                    })
+                })
+                .AsAsyncEnumerable();
         }
 
         // GET api/<SeriesController>/5

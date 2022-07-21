@@ -170,7 +170,7 @@ function nextOcurrenceInListWeighted(momentArray: dayjs.Dayjs[]): dayjs.Dayjs | 
 }
 
 const GraphSample: React.FC<IGraphSampleProps> = (props) => {
-  const [options, setOptions] = useState<Highcharts.Options>(buildOptions(props.seriesInfo.englishName, props.seriesInfo.publisher));
+  const [options, setOptions] = useState<Highcharts.Options>(buildOptions(props.seriesInfo.englishName, props.seriesInfo.englishLicense?.publisher.name));
   const [publishRate, setPublishRate] = useState<IPublishRate>();
   const [localizationTime, setLocalizationTime] = useState<ILocalizationTime>();
 
@@ -210,7 +210,8 @@ const GraphSample: React.FC<IGraphSampleProps> = (props) => {
       }
 
       const now = dayjs();
-      const isFinished = props.seriesInfo.completionStatus && props.seriesInfo.completionStatus !== CompletionStatus.OneShot;
+      // Ongoing is 0 so the first half of this appears to filter it out automatically.
+      const isFinished = props.seriesInfo.originalLicense?.completionStatus && props.seriesInfo.originalLicense?.completionStatus !== CompletionStatus.OneShot;
       const hasNoSource = false; // this.isHasNoSource();
       let nextjp: dayjs.Dayjs | undefined;
       let nexten: dayjs.Dayjs | undefined;
@@ -355,7 +356,7 @@ const GraphSample: React.FC<IGraphSampleProps> = (props) => {
       const dataEN: IPoint[] = en.map(mapToPoint);
       const dataAB: IPoint[] = ab.map(mapToPoint);
 
-      setOptions(buildOptions(props.seriesInfo.englishName, props.seriesInfo.publisher, dataJP, dataEN, dataAB));
+      setOptions(buildOptions(props.seriesInfo.englishName, props.seriesInfo.englishLicense?.publisher.name, dataJP, dataEN, dataAB));
 
       if (en.length > 1 || jp.length > 1) {
         const pubData: IPublishRate = {
@@ -495,7 +496,7 @@ const GraphSample: React.FC<IGraphSampleProps> = (props) => {
       }
     }
     getAnswer();
-  }, [props.seriesInfo.seriesId, props.seriesInfo.englishName, props.seriesInfo.publisher, props.seriesInfo.completionStatus]);
+  }, [props.seriesInfo.seriesId, props.seriesInfo.englishName, props.seriesInfo.englishLicense?.publisher.name, props.seriesInfo.originalLicense?.completionStatus]);
 
   return (
     <>
