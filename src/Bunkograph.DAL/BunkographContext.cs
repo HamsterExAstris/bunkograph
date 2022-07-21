@@ -12,8 +12,10 @@ namespace Bunkograph.DAL
         }
 
         public DbSet<Author> Authors => Set<Author>();
+        public DbSet<Language> Languages => Set<Language>();
         public DbSet<Series> Series => Set<Series>();
         public DbSet<SeriesBook> SeriesBooks => Set<SeriesBook>();
+        public DbSet<SeriesLicense> SeriesLicenses => Set<SeriesLicense>();
         public DbSet<Book> Books => Set<Book>();
         public DbSet<BookEdition> BookEditions => Set<BookEdition>();
         public DbSet<Publisher> Publishers => Set<Publisher>();
@@ -22,7 +24,7 @@ namespace Bunkograph.DAL
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Series>()
+            modelBuilder.Entity<SeriesLicense>()
                 .Property(p => p.CompletionStatus)
                 .HasConversion<string>();
 

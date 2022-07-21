@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Bunkograph.Models
+﻿namespace Bunkograph.Models
 {
     public class BookEdition
     {
@@ -13,20 +11,25 @@ namespace Bunkograph.Models
             set => _book = value;
         }
 
-        private Publisher? _publisher;
-        public Publisher Publisher
+        public int SeriesLicenseId { get; set; }
+        private SeriesLicense? _seriesLicense;
+        public SeriesLicense SeriesLicense
         {
-            get => _publisher ?? throw new InvalidOperationException("Uninitialized property: " + nameof(Publisher));
-            set => _publisher = value;
+            get => _seriesLicense ?? throw new InvalidOperationException("Uninitialized property: " + nameof(SeriesLicense));
+            set => _seriesLicense = value;
         }
 
-        [MaxLength(2)]
-        public string Language { get; set; }
         public DateOnly ReleaseDate { get; set; }
 
-        public BookEdition(string language, DateOnly releaseDate)
+        public BookEdition(SeriesLicense seriesLicense, DateOnly releaseDate)
         {
-            Language = language;
+            SeriesLicense = seriesLicense;
+            ReleaseDate = releaseDate;
+        }
+
+        public BookEdition(int seriesLicenseId, DateOnly releaseDate)
+        {
+            SeriesLicenseId = seriesLicenseId;
             ReleaseDate = releaseDate;
         }
     }

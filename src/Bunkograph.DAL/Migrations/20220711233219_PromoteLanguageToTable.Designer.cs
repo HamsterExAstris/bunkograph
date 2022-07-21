@@ -3,6 +3,7 @@ using System;
 using Bunkograph.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bunkograph.DAL.Migrations
 {
     [DbContext(typeof(BunkographContext))]
-    partial class BunkographContextModelSnapshot : ModelSnapshot
+    [Migration("20220711233219_PromoteLanguageToTable")]
+    partial class PromoteLanguageToTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,17 +69,23 @@ namespace Bunkograph.DAL.Migrations
                     b.Property<int>("BookId")
                         .HasColumnType("int");
 
+                    b.Property<string>("LanguageId")
+                        .IsRequired()
+                        .HasColumnType("varchar(2)");
+
+                    b.Property<int>("PublisherId")
+                        .HasColumnType("int");
+
                     b.Property<DateOnly>("ReleaseDate")
                         .HasColumnType("date");
-
-                    b.Property<int>("SeriesLicenseId")
-                        .HasColumnType("int");
 
                     b.HasKey("BookEditionId");
 
                     b.HasIndex("BookId");
 
-                    b.HasIndex("SeriesLicenseId");
+                    b.HasIndex("LanguageId");
+
+                    b.HasIndex("PublisherId");
 
                     b.ToTable("BookEditions");
                 });
@@ -119,6 +127,9 @@ namespace Bunkograph.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<string>("CompletionStatus")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("EnglishKey")
                         .HasColumnType("longtext");
 
@@ -157,36 +168,6 @@ namespace Bunkograph.DAL.Migrations
                     b.ToTable("SeriesBooks");
                 });
 
-            modelBuilder.Entity("Bunkograph.Models.SeriesLicense", b =>
-                {
-                    b.Property<int>("SeriesLicenseId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("CompletionStatus")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("LanguageId")
-                        .IsRequired()
-                        .HasColumnType("varchar(2)");
-
-                    b.Property<int>("PublisherId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SeriesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("SeriesLicenseId");
-
-                    b.HasIndex("LanguageId");
-
-                    b.HasIndex("PublisherId");
-
-                    b.HasIndex("SeriesId");
-
-                    b.ToTable("SeriesLicenses");
-                });
-
             modelBuilder.Entity("Bunkograph.Models.Book", b =>
                 {
                     b.HasOne("Bunkograph.Models.Author", "Author")
@@ -206,15 +187,23 @@ namespace Bunkograph.DAL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Bunkograph.Models.SeriesLicense", "SeriesLicense")
+                    b.HasOne("Bunkograph.Models.Language", "Language")
                         .WithMany()
-                        .HasForeignKey("SeriesLicenseId")
+                        .HasForeignKey("LanguageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Bunkograph.Models.Publisher", "Publisher")
+                        .WithMany()
+                        .HasForeignKey("PublisherId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Book");
 
-                    b.Navigation("SeriesLicense");
+                    b.Navigation("Language");
+
+                    b.Navigation("Publisher");
                 });
 
             modelBuilder.Entity("Bunkograph.Models.Publisher", b =>
@@ -245,33 +234,6 @@ namespace Bunkograph.DAL.Migrations
                     b.Navigation("Series");
                 });
 
-            modelBuilder.Entity("Bunkograph.Models.SeriesLicense", b =>
-                {
-                    b.HasOne("Bunkograph.Models.Language", "Language")
-                        .WithMany()
-                        .HasForeignKey("LanguageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Bunkograph.Models.Publisher", "Publisher")
-                        .WithMany()
-                        .HasForeignKey("PublisherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Bunkograph.Models.Series", "Series")
-                        .WithMany("SeriesLicenses")
-                        .HasForeignKey("SeriesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Language");
-
-                    b.Navigation("Publisher");
-
-                    b.Navigation("Series");
-                });
-
             modelBuilder.Entity("Bunkograph.Models.Book", b =>
                 {
                     b.Navigation("Editions");
@@ -282,8 +244,6 @@ namespace Bunkograph.DAL.Migrations
             modelBuilder.Entity("Bunkograph.Models.Series", b =>
                 {
                     b.Navigation("SeriesBooks");
-
-                    b.Navigation("SeriesLicenses");
                 });
 #pragma warning restore 612, 618
         }

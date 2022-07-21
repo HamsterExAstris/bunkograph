@@ -19,7 +19,7 @@ namespace Bunkograph.Web.ViewModels
                 ? Math.Round(seriesBook.SortOrder, 0)
                 : Math.Round(seriesBook.SortOrder, 2);
             Label = seriesBook.DisplayIndex ?? seriesBook.SortOrderString;
-            Language = bookEdition.Language;
+            Language = bookEdition.SeriesLicense.LanguageId;
         }
     }
 }

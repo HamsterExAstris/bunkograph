@@ -3,6 +3,7 @@ using System;
 using Bunkograph.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bunkograph.DAL.Migrations
 {
     [DbContext(typeof(BunkographContext))]
-    partial class BunkographContextModelSnapshot : ModelSnapshot
+    [Migration("20220712014518_LanguageNavigationFix")]
+    partial class LanguageNavigationFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,6 +69,9 @@ namespace Bunkograph.DAL.Migrations
                     b.Property<int>("BookId")
                         .HasColumnType("int");
 
+                    b.Property<int>("PublisherId")
+                        .HasColumnType("int");
+
                     b.Property<DateOnly>("ReleaseDate")
                         .HasColumnType("date");
 
@@ -76,6 +81,8 @@ namespace Bunkograph.DAL.Migrations
                     b.HasKey("BookEditionId");
 
                     b.HasIndex("BookId");
+
+                    b.HasIndex("PublisherId");
 
                     b.HasIndex("SeriesLicenseId");
 
@@ -206,6 +213,12 @@ namespace Bunkograph.DAL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Bunkograph.Models.Publisher", "Publisher")
+                        .WithMany()
+                        .HasForeignKey("PublisherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Bunkograph.Models.SeriesLicense", "SeriesLicense")
                         .WithMany()
                         .HasForeignKey("SeriesLicenseId")
@@ -213,6 +226,8 @@ namespace Bunkograph.DAL.Migrations
                         .IsRequired();
 
                     b.Navigation("Book");
+
+                    b.Navigation("Publisher");
 
                     b.Navigation("SeriesLicense");
                 });
